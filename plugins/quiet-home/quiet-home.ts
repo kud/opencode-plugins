@@ -50,11 +50,11 @@ const hex = ({ r, g, b }: Rgba) =>
 const blend = (from: Rgba, to: Rgba, amount: number): string =>
   hex({ r: from.r + (to.r - from.r) * amount, g: from.g + (to.g - from.g) * amount, b: from.b + (to.b - from.b) * amount })
 
-const node = (tag: string, props: Record<string, unknown>, children: unknown[] = []) => {
+const node = (tag: string, props: Record<string, unknown>, children: unknown[] = []): JSX.Element => {
   const element = createElement(tag)
   for (const [key, value] of Object.entries(props)) setProp(element, key, value)
   for (const child of children) insert(element, child as JSX.Element)
-  return element
+  return element as unknown as JSX.Element
 }
 
 const logoHalf = (line: string, fg: Rgba, background: Rgba, bold: boolean) => {
@@ -119,7 +119,7 @@ const tui: TuiPlugin = async (api) => {
           [
             header(api),
             node("box", { flexGrow: 1, minHeight: 0 }),
-            node("box", { flexShrink: 0 }, [createComponent(api.ui.Prompt, { hint: node("text", {}) as unknown as JSX.Element })]),
+            node("box", { flexShrink: 0 }, [createComponent(api.ui.Prompt, { hint: node("text", {}) })]),
           ],
         ),
     },
