@@ -12,12 +12,12 @@
 
 ---
 
-The opencode counterpart of [kud/claude-plugins](https://github.com/kud/claude-plugins). Each plugin is a single TypeScript file you download, name in your opencode config, and forget about. There is no package to install, no build step and no registry in the way.
+The opencode counterpart of [kud/claude-plugins](https://github.com/kud/claude-plugins). Each plugin is a single TypeScript file, published to npm as `@kud/opencode-<name>`: name it in your opencode config, pinned to a version, and forget about it. There is no build step.
 
 ## Features
 
 - **One file per plugin.** Read the whole thing in a sitting, copy it, tweak it.
-- **Loaded as-is.** opencode runs the `.ts` directly: nothing to compile, bundle or publish.
+- **Loaded as-is.** opencode runs the `.ts` directly: nothing to compile or bundle.
 - **Typechecked.** Every plugin is checked against the real `@opencode-ai/plugin` and `@opentui/solid` types, so API drift shows up here before it shows up in your terminal.
 - **Easy to switch off.** Each plugin registers under its own ID, so a single `plugin_enabled` entry turns it off without touching the rest of your setup.
 - **Small and focused.** Plugins do one job and leave the rest of opencode alone.
@@ -41,7 +41,7 @@ npm install
 npm run typecheck
 ```
 
-`typecheck` runs `tsc --noEmit` and is the only script: there is no build, no test suite and nothing to publish. Plugins live under `plugins/<name>/` as a single `.ts` file with its own README.
+`typecheck` runs `tsc --noEmit` and is the only script: there is no build and no test suite. Plugins live under `plugins/<name>/` as a single `.ts` file with its own `package.json` and README, and each is released by pushing a `<name>-v<version>` tag.
 
 ## License
 

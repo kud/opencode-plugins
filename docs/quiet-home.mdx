@@ -14,22 +14,13 @@ those.
 
 ## 📦 Install
 
-A TUI plugin, so it goes in `tui.json`, not `opencode.json`. Download the file
-somewhere **outside** `~/.config/opencode/plugin/` and `plugins/` (opencode loads
-everything there as a server plugin and would hand this one the wrong API):
-
-```sh
-mkdir -p ~/.config/opencode/tui
-curl -fsSL -o ~/.config/opencode/tui/quiet-home.ts \
-  https://raw.githubusercontent.com/kud/opencode-plugins/main/plugins/quiet-home/quiet-home.ts
-```
-
-Then point `~/.config/opencode/tui.json` at it, and switch off the two built-in
-home blocks it replaces:
+A TUI plugin, so it goes in `~/.config/opencode/tui.json`, not `opencode.json`.
+Name the package, pinned to a version, and switch off the two built-in home
+blocks it replaces:
 
 ```json
 {
-  "plugin": ["/Users/you/.config/opencode/tui/quiet-home.ts"],
+  "plugin": ["@kud/opencode-quiet-home@0.1.0"],
   "plugin_enabled": {
     "internal:home-tips": false,
     "internal:home-footer": false
@@ -37,7 +28,26 @@ home blocks it replaces:
 }
 ```
 
-The path must be absolute. No build step: the plugin is written without JSX, so
+opencode installs it with Bun on the next start. To upgrade, bump the version in
+that line.
+
+### Without npm
+
+The plugin is a single file, so you can also download it somewhere **outside**
+`~/.config/opencode/plugin/` and `plugins/` (opencode loads everything there as a
+server plugin and would hand this one the wrong API):
+
+```sh
+mkdir -p ~/.config/opencode/tui
+curl -fsSL -o ~/.config/opencode/tui/quiet-home.ts \
+  https://raw.githubusercontent.com/kud/opencode-plugins/main/plugins/quiet-home/quiet-home.ts
+```
+
+Then use its absolute path in place of the package name:
+`"plugin": ["/Users/you/.config/opencode/tui/quiet-home.ts"]`, with the same
+`plugin_enabled` block.
+
+Either way there is no build step: the plugin is written without JSX, so
 opencode loads the `.ts` as-is.
 
 ## ⚙️ How it works

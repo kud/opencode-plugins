@@ -1,14 +1,14 @@
 ---
 title: 👋 Introduction
-description: A small collection of opencode plugins by kud — each one a single TypeScript file you download and name in your opencode config.
+description: A small collection of opencode plugins by kud — each one a single TypeScript file, installed from npm by naming it in your opencode config.
 ---
 
 **opencode-plugins** is the [opencode](https://opencode.ai) counterpart of
 [claude-plugins](/projects/claude-plugins/docs). Each plugin is a single
-TypeScript file: download it, name it in your opencode config, and forget about
-it.
+TypeScript file, published to npm as `@kud/opencode-<name>`: name it in your
+opencode config, pinned to a version, and forget about it.
 
-There is no package to install, no build step and no registry in the way.
+There is no build step: opencode installs the package and runs the `.ts` as-is.
 
 ## 🧩 Plugins
 
@@ -19,14 +19,14 @@ There is no package to install, no build step and no registry in the way.
 ## 📦 Install a plugin
 
 Installation differs by plugin kind: TUI plugins go in `tui.json`, server
-plugins in `opencode.json`. Each plugin page lists its own steps, including
-where the file must live and which config entries it needs.
+plugins in `opencode.json`. Each plugin page lists the package line and the
+config entries it needs, plus a single-file install for when npm is not wanted.
 
 ## ⚙️ How it works
 
 - **One file per plugin.** Read the whole thing in a sitting, copy it, tweak it.
-- **Loaded as-is.** opencode runs the `.ts` directly: nothing to compile, bundle
-  or publish.
+- **Loaded as-is.** opencode runs the `.ts` directly: nothing to compile or
+  bundle.
 - **Typechecked.** Every plugin is checked against the real
   `@opencode-ai/plugin` and `@opentui/solid` types, so API drift shows up in
   the repo before it shows up in your terminal.

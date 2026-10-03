@@ -1,0 +1,35 @@
+{
+  "name": "@kud/opencode-quiet-home",
+  "version": "0.1.0",
+  "description": "opencode's home screen laid out like a session: logo top left, prompt docked at the bottom.",
+  "type": "module",
+  "license": "MIT",
+  "author": "kud",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kud/opencode-plugins.git",
+    "directory": "plugins/quiet-home"
+  },
+  "homepage": "https://github.com/kud/opencode-plugins/tree/main/plugins/quiet-home#readme",
+  "bugs": {
+    "url": "https://github.com/kud/opencode-plugins/issues"
+  },
+  "keywords": [
+    "opencode",
+    "opencode-plugin"
+  ],
+  "exports": {
+    "./tui": "./quiet-home.ts"
+  },
+  "engines": {
+    "opencode": ">=1.18.0"
+  },
+  "files": [
+    "quiet-home.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
