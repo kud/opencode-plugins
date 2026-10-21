@@ -3,7 +3,7 @@
 # 🧩 opencode-plugins
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![opencode](https://img.shields.io/badge/opencode-TUI%20plugins-F97316?style=flat-square)](https://opencode.ai)
+[![opencode](https://img.shields.io/badge/opencode-v2%20TUI%20plugins-F97316?style=flat-square)](https://opencode.ai)
 [![MIT](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](./LICENSE)
 
 **A small collection of opencode plugins by kud.**
@@ -14,23 +14,37 @@
 
 The opencode counterpart of [kud/claude-plugins](https://github.com/kud/claude-plugins). Each plugin is a single TypeScript file, published to npm as `@kud/opencode-<name>`: name it in your opencode config, pinned to a version, and forget about it. There is no build step.
 
+These are opencode v2 plugins and need opencode 2.1.0 or later.
+
 ## Features
 
 - **One file per plugin.** Read the whole thing in a sitting, copy it, tweak it.
 - **Loaded as-is.** opencode runs the `.ts` directly: nothing to compile or bundle.
-- **Typechecked.** Every plugin is checked against the real `@opencode-ai/plugin` and `@opentui/solid` types, so API drift shows up here before it shows up in your terminal.
-- **Easy to switch off.** Each plugin registers under its own ID, so a single `plugin_enabled` entry turns it off without touching the rest of your setup.
+- **Typechecked.** Every plugin is checked against the real `@opencode/plugin` and `@opentui` types, so API drift shows up here before it shows up in your terminal.
+- **Easy to switch off.** Each plugin registers under its own ID, so a single `-<id>` entry in `plugins` turns it off without touching the rest of your setup.
 - **Small and focused.** Plugins do one job and leave the rest of opencode alone.
 
 ## Plugins
 
-| Plugin                             | Kind | What it does                                                                         |
-| ---------------------------------- | ---- | ------------------------------------------------------------------------------------ |
-| [quiet-home](./plugins/quiet-home) | TUI  | The home screen laid out like a session: logo top left, prompt docked at the bottom. |
+| Plugin                                             | Kind | What it does                                                                        |
+| -------------------------------------------------- | ---- | ----------------------------------------------------------------------------------- |
+| [statusline](./plugins/statusline)                 | TUI  | The prompt's footer row as a statusline: path, branch, provider, model and title.   |
+| [shell-highlighting](./plugins/shell-highlighting) | TUI  | Shell command names in the theme's amber, in file views and `sh`/`zsh` code fences. |
 
 ## Install
 
-Installation differs by plugin kind (TUI plugins go in `tui.json`, server plugins in `opencode.json`), so each plugin documents its own. For quiet-home, follow [plugins/quiet-home/README.md](./plugins/quiet-home/README.md).
+TUI plugins go in `~/.config/opencode/cli.json`. Name the package, pinned to a version:
+
+```json
+{
+  "plugins": [
+    "@kud/opencode-statusline@0.1.0",
+    "@kud/opencode-shell-highlighting@0.1.0"
+  ]
+}
+```
+
+opencode installs them on the next start. Each plugin's README lists the built-ins it pairs with.
 
 ## Development
 

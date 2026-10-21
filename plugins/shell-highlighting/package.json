@@ -1,0 +1,40 @@
+{
+  "name": "@kud/opencode-shell-highlighting",
+  "version": "0.1.0",
+  "description": "Shell command names in the theme's amber, in opencode's file views and code fences.",
+  "type": "module",
+  "license": "MIT",
+  "author": "kud",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kud/opencode-plugins.git",
+    "directory": "plugins/shell-highlighting"
+  },
+  "homepage": "https://github.com/kud/opencode-plugins/tree/main/plugins/shell-highlighting#readme",
+  "bugs": {
+    "url": "https://github.com/kud/opencode-plugins/issues"
+  },
+  "keywords": [
+    "opencode",
+    "opencode-plugin"
+  ],
+  "exports": {
+    "./tui": "./shell-highlighting.ts"
+  },
+  "peerDependencies": {
+    "@opencode/plugin": ">=2.1.0",
+    "@opentui/core": ">=0.6.6"
+  },
+  "engines": {
+    "opencode": ">=2.1.0"
+  },
+  "files": [
+    "shell-highlighting.ts",
+    "bash-highlights.scm",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

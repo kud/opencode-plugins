@@ -1,9 +1,9 @@
-name: Release quiet-home
+name: Release shell-highlighting
 
 on:
   push:
     tags:
-      - "quiet-home-v*"
+      - "shell-highlighting-v*"
 
 jobs:
   publish:
@@ -27,12 +27,12 @@ jobs:
 
       - name: Verify tag version matches package.json
         run: |
-          TAG_VERSION="${GITHUB_REF#refs/tags/quiet-home-v}"
-          PACKAGE_VERSION=$(node -e "console.log(require('./plugins/quiet-home/package.json').version)")
+          TAG_VERSION="${GITHUB_REF#refs/tags/shell-highlighting-v}"
+          PACKAGE_VERSION=$(node -e "console.log(require('./plugins/shell-highlighting/package.json').version)")
           if [ "$TAG_VERSION" != "$PACKAGE_VERSION" ]; then
             echo "Tag version (${TAG_VERSION}) does not match package.json version (${PACKAGE_VERSION})"
             exit 1
           fi
 
       - run: npm publish --provenance --access public
-        working-directory: plugins/quiet-home
+        working-directory: plugins/shell-highlighting

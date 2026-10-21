@@ -1,0 +1,40 @@
+{
+  "name": "@kud/opencode-statusline",
+  "version": "0.1.0",
+  "description": "A statusline in opencode's prompt footer: path, branch, provider, model and session title.",
+  "type": "module",
+  "license": "MIT",
+  "author": "kud",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kud/opencode-plugins.git",
+    "directory": "plugins/statusline"
+  },
+  "homepage": "https://github.com/kud/opencode-plugins/tree/main/plugins/statusline#readme",
+  "bugs": {
+    "url": "https://github.com/kud/opencode-plugins/issues"
+  },
+  "keywords": [
+    "opencode",
+    "opencode-plugin"
+  ],
+  "exports": {
+    "./tui": "./statusline.ts"
+  },
+  "peerDependencies": {
+    "@opencode/plugin": ">=2.1.0",
+    "@opentui/solid": ">=0.6.6",
+    "solid-js": ">=1.9.0"
+  },
+  "engines": {
+    "opencode": ">=2.1.0"
+  },
+  "files": [
+    "statusline.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
