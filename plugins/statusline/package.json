@@ -1,6 +1,6 @@
 {
   "name": "@kud/opencode-statusline",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A statusline in opencode's prompt footer: path, branch, provider, model and session title.",
   "type": "module",
   "license": "MIT",
