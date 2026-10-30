@@ -5,9 +5,13 @@
  *
  * opencode draws its own path and branch inside `prompt.footer.status`, sharing the row with
  * the busy indicator, and offers no slot for the path alone. So this replaces the whole slot:
- * the statusline when idle, opencode's own no-animation busy mark `[⋯]` while a turn runs, which
- * keeps the path on screen once. Lost with the slot: the "press esc again" interrupt hint and the
- * "(new worktree)" progress line.
+ * the statusline when idle, opencode's own block scanner while a turn runs, which keeps the path
+ * on screen once. The scanner takes the theme's border colour: plugins cannot see the current
+ * agent, so it never tints to the agent the way opencode's own does. Lost with the slot: the
+ * "press esc again" interrupt hint and the "(new worktree)" progress line.
+ *
+ * opencode's `animations` setting is not exposed to plugins, so the plugin takes its own: pass
+ * `{ "animations": false }` as options to get opencode's still mark `[⋯]` instead.
  *
  * Narrow panes drop parts in a fixed order: the title shortens first, then provider, model and
  * branch go; the path always stays.
@@ -18,6 +22,7 @@
  */
 
 import { Plugin } from "@opencode/plugin/tui"
+import { RGBA } from "@opentui/core"
 import { createElement, insert, setProp } from "@opentui/solid"
 import { createSignal, type JSX } from "solid-js"
 import { homedir } from "node:os"
@@ -107,6 +112,68 @@ const text = (runs: Run[], props: Record<string, unknown> = {}) =>
     runs.map((run) => node("span", { style: { fg: run.color, bold: run.bold } }, [run.text])),
   )
 
+/**
+ * opencode's busy scanner (packages/tui/src/ui/spinner.ts, called with style "blocks",
+ * inactiveFactor 0.6 and minAlpha 0.3), narrowed to those settings: eight cells, a lead
+ * with a six-step trail sweeping out and back, holding 9 frames at the far end and 30 at home.
+ */
+const SCAN_WIDTH = 8
+const SCAN_HOLD_END = 9
+const SCAN_HOLD_START = 30
+const SCAN_TRAIL = 6
+const SCAN_INACTIVE_ALPHA = 0.6
+const SCAN_MIN_ALPHA = 0.3
+const SCAN_FRAMES = SCAN_WIDTH + SCAN_HOLD_END + (SCAN_WIDTH - 1) + SCAN_HOLD_START
+
+type Progress = { progress: number; total: number }
+type ScanState = { lead: number; forward: boolean; hold?: Progress; move?: Progress }
+
+const scanState = (frame: number): ScanState => {
+  const back = frame - SCAN_WIDTH - SCAN_HOLD_END
+  if (frame < SCAN_WIDTH) return { lead: frame, forward: true, move: { progress: frame, total: SCAN_WIDTH } }
+  if (back < 0) return { lead: SCAN_WIDTH - 1, forward: true, hold: { progress: frame - SCAN_WIDTH, total: SCAN_HOLD_END } }
+  if (back < SCAN_WIDTH - 1) return { lead: SCAN_WIDTH - 2 - back, forward: false, move: { progress: back, total: SCAN_WIDTH - 1 } }
+  return { lead: 0, forward: false, hold: { progress: back - (SCAN_WIDTH - 1), total: SCAN_HOLD_START } }
+}
+
+/** Trail step lighting a cell: 0 is the lead, -1 or past the trail is unlit. */
+const trailStep = (state: ScanState, cell: number): number => {
+  const behind = state.forward ? state.lead - cell : cell - state.lead
+  if (state.hold) return behind + state.hold.progress
+  return behind >= 0 && behind < SCAN_TRAIL ? behind : -1
+}
+
+const isLit = (step: number) => step >= 0 && step < SCAN_TRAIL
+
+const scanFrames = (): string[] =>
+  Array.from({ length: SCAN_FRAMES }, (_, frame) =>
+    Array.from({ length: SCAN_WIDTH }, (_, cell) => (isLit(trailStep(scanState(frame), cell)) ? "■" : "⬝")).join(""),
+  )
+
+/** Unlit cells fade out while the scanner rests and back in as it moves. */
+const unlitFade = ({ hold, move }: ScanState): number =>
+  hold
+    ? Math.max(SCAN_MIN_ALPHA, 1 - Math.min(hold.progress / hold.total, 1) * (1 - SCAN_MIN_ALPHA))
+    : SCAN_MIN_ALPHA + Math.min(move!.progress / Math.max(1, move!.total - 1), 1) * (1 - SCAN_MIN_ALPHA)
+
+const scanColors = (color: RGBA) => {
+  const trail = Array.from({ length: SCAN_TRAIL }, (_, step) => {
+    const bloom = step === 1 ? 1.15 : 1
+    const alpha = step === 0 ? 1 : step === 1 ? 0.9 : Math.pow(0.65, step - 1)
+    return RGBA.fromValues(Math.min(1, color.r * bloom), Math.min(1, color.g * bloom), Math.min(1, color.b * bloom), alpha)
+  })
+  return (frame: number, cell: number): RGBA => {
+    const state = scanState(frame)
+    const step = trailStep(state, cell)
+    return isLit(step) ? trail[step]! : RGBA.fromValues(color.r, color.g, color.b, SCAN_INACTIVE_ALPHA * unlitFade(state))
+  }
+}
+
+const busyMark = (context: Context): JSX.Element =>
+  context.options.animations === false
+    ? text([{ text: "[⋯]", color: BUSY_GREY }], { marginLeft: 1 })
+    : node("spinner", { marginLeft: 1, frames: scanFrames(), color: scanColors(context.theme.border.base), interval: 40 })
+
 const leftParts = (context: Context, sessionID: string | undefined): (Run[] | undefined)[] => {
   const session = sessionID ? context.data.session.get(sessionID) : undefined
   const location = context.location ?? context.data.location.default()
@@ -176,7 +243,7 @@ export default Plugin.define({
           [
             () =>
               input.sessionID && context.data.session.status(input.sessionID) === "running"
-                ? text([{ text: "[⋯]", color: BUSY_GREY }], { marginLeft: 1 })
+                ? busyMark(context)
                 : statusline(context, input.sessionID, room()),
           ],
         )

@@ -6,7 +6,7 @@ opencode's prompt footer row, redrawn as a statusline:
 ~/Projects/site ⎇  main ◈ GitHub Copilot ✻ Claude Sonnet 5                 ✦ Fix the prompt bar colour
 ```
 
-The working directory (parent in pink, folder in blue), the git branch, the provider, the model and, pushed to the right, the session title. While a turn runs, the row shows opencode's quiet busy mark `[⋯]` instead.
+The working directory (parent in pink, folder in blue), the git branch, the provider, the model and, pushed to the right, the session title. While a turn runs, the row shows opencode's busy scanner instead, in the theme's border colour.
 
 Narrow panes drop parts in a fixed order: the title shortens first, then the provider, model and branch go. The path always stays.
 
@@ -16,7 +16,7 @@ A TUI plugin, so it goes in `~/.config/opencode/cli.json`. Name the package, pin
 
 ```json
 {
-  "plugins": ["@kud/opencode-statusline@0.1.0"]
+  "plugins": ["@kud/opencode-statusline@0.1.1"]
 }
 ```
 
@@ -27,7 +27,7 @@ The statusline carries what the sidebar's context block and footer show, so it p
 ```json
 {
   "plugins": [
-    "@kud/opencode-statusline@0.1.0",
+    "@kud/opencode-statusline@0.1.1",
     "-opencode.sidebar.context",
     "-opencode.sidebar.footer",
     "-opencode.home.footer"
@@ -50,6 +50,16 @@ Either way there is no build step: the plugin is written without JSX, so opencod
 ## What it replaces
 
 The plugin claims the whole `prompt.footer.status` slot, because opencode draws its own path and branch there and offers no slot for the path alone. Two things go with it: the "press esc again" interrupt hint and the "(new worktree)" progress line.
+
+## A still busy mark
+
+opencode's `animations` setting does not reach plugins, so the scanner runs even with it off. For opencode's still mark `[⋯]` instead, give the plugin its own option:
+
+```json
+{
+  "plugins": [{ "package": "@kud/opencode-statusline@0.1.1", "options": { "animations": false } }]
+}
+```
 
 ## Turning it off
 
