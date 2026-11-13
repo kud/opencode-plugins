@@ -2,6 +2,7 @@
   "name": "opencode-plugins",
   "private": true,
   "license": "MIT",
+  "homepage": "https://kud.io/projects/opencode-plugins",
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit"
